@@ -30,14 +30,16 @@ class OmniglotModel(ReptileModel):
     """
     A model for Omniglot classification.
     """
-    def __init__(self, num_classes):
+    def __init__(self, num_classes, imgc,imgsz):
         ReptileModel.__init__(self)
 
         self.num_classes = num_classes
+        self.imgc = imgc
+        self.imgsz = imgsz
 
         self.conv = nn.Sequential(
             # 28 x 28 - 1
-            nn.Conv2d(1, 64, 3, 2, 1),
+            nn.Conv2d(self.imgc, 64, 3, 2, 1),
             nn.BatchNorm2d(64),
             nn.ReLU(True),
 
@@ -61,12 +63,12 @@ class OmniglotModel(ReptileModel):
 
         self.classifier = nn.Sequential(
             # 2 x 2 x 64 = 256
-            nn.Linear(256, num_classes),
+            nn.Linear(2304, num_classes),
             nn.LogSoftmax(1)
         )
 
     def forward(self, x):
-        out = x.view(-1, 1, 28, 28)
+        out = x.view(-1, self.imgc, self.imgsz, self.imgsz)
         out = self.conv(out)
         out = out.view(len(out), -1)
         out = self.classifier(out)
@@ -77,7 +79,7 @@ class OmniglotModel(ReptileModel):
         return argmax
 
     def clone(self):
-        clone = OmniglotModel(self.num_classes)
+        clone = OmniglotModel(self.num_classes,self.imgc,self.imgsz)
         clone.load_state_dict(self.state_dict())
         if self.is_cuda():
             clone.cuda()
@@ -85,7 +87,7 @@ class OmniglotModel(ReptileModel):
 
 
 if __name__ == '__main__':
-    model = OmniglotModel(20)
+    model = OmniglotModel(20,1)
     x = Variable(torch.zeros(5, 28*28))
     y = model(x)
     print('x', x.size())
