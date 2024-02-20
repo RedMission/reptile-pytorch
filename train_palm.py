@@ -61,10 +61,10 @@ parser.add_argument('--imgc', type=int, help='imgc', default=3)
 parser.add_argument('--task_num', type=int, help='meta batch size, namely task num', default=6)
 parser.add_argument('--num_workers', type=int, help='数据加载子进程', default=0)
 
-parser.add_argument('--classes', default=10, type=int, help='classes in base-task (N-way)')
-parser.add_argument('--shots', default=1, type=int, help='shots per class (K-shot)')
-parser.add_argument('--train-shots', default=1, type=int, help='train shots')
-parser.add_argument('--meta-iterations', default=100000, type=int, help='number of meta iterations')
+# parser.add_argument('--classes', default=10, type=int, help='classes in base-task (N-way)')
+# parser.add_argument('--shots', default=1, type=int, help='shots per class (K-shot)')
+# parser.add_argument('--train-shots', default=1, type=int, help='train shots')
+parser.add_argument('--meta-iterations', default=5000, type=int, help='number of meta iterations')
 parser.add_argument('--start-meta-iteration', default=0, type=int, help='start iteration')
 parser.add_argument('--iterations', default=5, type=int, help='number of base iterations')
 parser.add_argument('--test-iterations', default=50, type=int, help='number of base iterations')
@@ -229,7 +229,7 @@ def log(mode,meta_loss,meta_accuracy,meta_lr):
 
 
 # Build model, optimizer, and set states
-meta_net = OmniglotModel(args.classes, args.imgc, args.imgsz)
+meta_net = OmniglotModel(args.n_way, args.imgc, args.imgsz)
 if args.cuda:
     meta_net.cuda()
 meta_optimizer = torch.optim.SGD(meta_net.parameters(), lr=args.meta_lr)
