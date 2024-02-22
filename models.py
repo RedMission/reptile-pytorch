@@ -62,8 +62,8 @@ class OmniglotModel(ReptileModel):
         )
 
         self.classifier = nn.Sequential(
-            # 2 x 2 x 64 = 256
-            nn.Linear(2304, num_classes),
+            # 2 x 2 x 64 = 256 2304
+            nn.Linear(256, num_classes),
             nn.LogSoftmax(1)
         )
 
@@ -80,6 +80,65 @@ class OmniglotModel(ReptileModel):
 
     def clone(self):
         clone = OmniglotModel(self.num_classes,self.imgc,self.imgsz)
+        clone.load_state_dict(self.state_dict())
+        if self.is_cuda():
+            clone.cuda()
+        return clone
+
+class OmniglotModel_old(ReptileModel):
+    """
+    A model for Omniglot classification.
+    """
+    def __init__(self, num_classes):
+        ReptileModel.__init__(self)
+
+        self.num_classes = num_classes
+        # self.imgc = imgc
+        # self.imgsz = imgsz
+
+        self.conv = nn.Sequential(
+            # 28 x 28 - 1
+            nn.Conv2d(1, 64, 3, 2, 1),
+            nn.BatchNorm2d(64),
+            nn.ReLU(True),
+
+            # 14 x 14 - 64
+            nn.Conv2d(64, 64, 3, 2, 1),
+            nn.BatchNorm2d(64),
+            nn.ReLU(True),
+
+            # 7 x 7 - 64
+            nn.Conv2d(64, 64, 3, 2, 1),
+            nn.BatchNorm2d(64),
+            nn.ReLU(True),
+
+            # 4 x 4 - 64
+            nn.Conv2d(64, 64, 3, 2, 1),
+            nn.BatchNorm2d(64),
+            nn.ReLU(True),
+
+            # 2 x 2 - 64
+        )
+
+        self.classifier = nn.Sequential(
+            # 2 x 2 x 64 = 256 2304
+            nn.Linear(256, num_classes),
+            nn.LogSoftmax(1)
+        )
+
+    def forward(self, x):
+        out = x.view(-1,1,28,28)
+        out = self.conv(out)
+        out = out.view(len(out), -1)
+        out = self.classifier(out)
+        return out
+
+    def predict(self, prob):
+        __, argmax = prob.max(1)
+        return argmax
+
+    def clone(self):
+        clone = OmniglotModel_old(self.num_classes)
         clone.load_state_dict(self.state_dict())
         if self.is_cuda():
             clone.cuda()

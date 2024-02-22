@@ -11,10 +11,9 @@ from torchvision import transforms
 import numpy as np
 from tensorboardX import SummaryWriter
 
-from models import OmniglotModel
+from models import OmniglotModel_old
 from omniglot import MetaOmniglotFolder, split_omniglot, ImageCache, transform_image, transform_label
 from utils import find_latest_file
-
 
 def make_infinite(dataloader):
     while True:
@@ -41,7 +40,7 @@ def Variable_(tensor, *args_, **kwargs):
 parser = argparse.ArgumentParser('Train reptile on omniglot')
 
 # Mode
-parser.add_argument('--logdir', default="logdir",help='Folder to store everything/load')
+parser.add_argument('logdir', default="",help='Folder to store everything/load')
 
 # - Training params
 parser.add_argument('--classes', default=10, type=int, help='classes in base-task (N-way)')
@@ -72,8 +71,8 @@ check_dir = os.path.join(run_dir, 'checkpoint')
 
 # By default, continue training
 # Check if args.json exists
-# if os.path.exists(args_filename):
-if False:
+if os.path.exists(args_filename):
+# if False:
     print('Attempting to resume training. (Delete {} to start over)'.format(args.logdir))
     # Resuming training is incompatible with other checkpoint
     # than the last one in logdir
@@ -178,7 +177,7 @@ def set_learning_rate(optimizer, lr):
 
 
 # Build model, optimizer, and set states
-meta_net = OmniglotModel(args.classes)
+meta_net = OmniglotModel_old(args.classes)
 if args.cuda:
     meta_net.cuda()
 meta_optimizer = torch.optim.SGD(meta_net.parameters(), lr=args.meta_lr)

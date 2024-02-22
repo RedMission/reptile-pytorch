@@ -45,31 +45,28 @@ def Variable_(tensor, *args_, **kwargs):
 parser = argparse.ArgumentParser('Train reptile on PLAM')
 
 # Mode
-parser.add_argument('--logdir', default="logdir", help='Folder to store everything/load')
+parser.add_argument('logdir', default="", help='Folder to store everything/load')
 
 # - Training params
-parser.add_argument('--train_data', type=str, help='', default='../DAGAN/datasets/IITDdata_left_PSA2+DC+SC+W_6.npy')
-parser.add_argument('--test_data', type=str, help='', default='../DAGAN/datasets/IITDdata_right.npy')
-# argparser.add_argument('--train_data', type=str, help='', default='../MCCGAN/datasets/Tongji_session2_PSA+SC+MC+W_6.npy')
-# argparser.add_argument('--test_data', type=str, help='', default='../MCCGAN/datasets/Tongji_session1.npy')
-parser.add_argument('--n_way', type=int, help='n way', default=10)
-parser.add_argument('--k_spt', type=int, help='k shot for support set', default=1)  # default=1
-parser.add_argument('--k_qry', type=int, help='k shot for query set', default=2)  # 原15
-parser.add_argument('--t_batchsz', type=int, help='train-batchsz', default=5000)
-parser.add_argument('--imgsz', type=int, help='imgsz', default=84)  # 调节的图像尺寸
-parser.add_argument('--imgc', type=int, help='imgc', default=3)
-parser.add_argument('--task_num', type=int, help='meta batch size, namely task num', default=6)
+# parser.add_argument('--train_data', type=str, help='', default='../DAGAN/datasets/IITDdata_left_PSA2+DC+SC+W_6.npy')
+# parser.add_argument('--test_data', type=str, help='', default='../DAGAN/datasets/IITDdata_right.npy')
+parser.add_argument('--train_data', type=str, help='', default='../DAGAN/datasets/Tongji_session2_PSA2+DC+SC+W_6.npy')
+parser.add_argument('--test_data', type=str, help='', default='../DAGAN/datasets/Tongji_session2.npy')
+parser.add_argument('--n_way', type=int, help='n way', default=5)
+parser.add_argument('--k_spt', type=int, help='k shot for support set', default=3)  # default=1
+parser.add_argument('--k_qry', type=int, help='k shot for query set', default=1)  # 原15
+parser.add_argument('--t_batchsz', type=int, help='train-batchsz', default=1000)
+parser.add_argument('--imgsz', type=int, help='imgsz', default=28)  # 调节的图像尺寸
+parser.add_argument('--imgc', type=int, help='imgc', default=1)
+parser.add_argument('--task_num', type=int, help='meta batch size, namely task num', default=10)
 parser.add_argument('--num_workers', type=int, help='数据加载子进程', default=0)
 
-# parser.add_argument('--classes', default=10, type=int, help='classes in base-task (N-way)')
-# parser.add_argument('--shots', default=1, type=int, help='shots per class (K-shot)')
-# parser.add_argument('--train-shots', default=1, type=int, help='train shots')
 parser.add_argument('--meta-iterations', default=5000, type=int, help='number of meta iterations')
 parser.add_argument('--start-meta-iteration', default=0, type=int, help='start iteration')
 parser.add_argument('--iterations', default=5, type=int, help='number of base iterations')
 parser.add_argument('--test-iterations', default=50, type=int, help='number of base iterations')
 parser.add_argument('--batch', default=10, type=int, help='minibatch size in base task')
-parser.add_argument('--meta-lr', default=1., type=float, help='meta learning rate')
+parser.add_argument('--meta-lr', default=2., type=float, help='meta learning rate')
 parser.add_argument('--lr', default=1e-3, type=float, help='base learning rate')
 
 # - General params
@@ -90,8 +87,8 @@ check_dir = os.path.join(run_dir, 'checkpoint')
 
 # By default, continue training
 # Check if args.json exists
-# if os.path.exists(args_filename):
-if False:
+if os.path.exists(args_filename):
+# if False:
     print('Attempting to resume training. (Delete {} to start over)'.format(args.logdir))
     # Resuming training is incompatible with other checkpoint
     # than the last one in logdir

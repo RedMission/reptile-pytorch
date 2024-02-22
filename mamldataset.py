@@ -30,7 +30,8 @@ class MamlDataset(Dataset):
                                                  # transforms.ToPILImage(),
                                                  transforms.Resize((imgsz, imgsz)),
                                                  transforms.ToTensor(),
-                                                 transforms.Normalize((0.485,), (0.229,))
+                                                 # transforms.Normalize((0.485,), (0.229,))
+                                                 transforms.Normalize((0.5,), (0.5,))
                                                  ])
         # 读入数据集合array [class_num, pre_class, imgsize, imgsize, c]
         self.raw_data = np.load(root, allow_pickle=True).copy()
