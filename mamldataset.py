@@ -57,7 +57,7 @@ class MamlDataset(Dataset):
     def create_batch(self, batchsz):
         self.support_x_batch = []  # support set batch
         self.query_x_batch = []  # query set batch
-        for b in range(batchsz):  # for each batch
+        for b in range(batchsz):  # for each batch 每一批数据
             # 1.select n_way classes randomly 选择n个行号
             selected_cls = np.random.choice(self.cls_num, self.n_way, False)  # no duplicate
             np.random.shuffle(selected_cls)  # 打乱行号顺序
@@ -80,7 +80,7 @@ class MamlDataset(Dataset):
             random.shuffle(query_x)
 
             self.support_x_batch.append(support_x)  # append set to current sets
-            self.query_x_batch.append(query_x)  # append sets to current sets
+            self.query_x_batch.append(query_x)  # append set to current sets
 
     def __getitem__(self, index):
         # [setsz, c, resize, resize] 用来放图像数据
@@ -109,7 +109,7 @@ class MamlDataset(Dataset):
         for i,index in enumerate(flatten_query_x):
             query_x[i] = self.transform(self.raw_data[index[0]][index[1]])
         return support_x, torch.LongTensor(support_y_relative), query_x, torch.LongTensor(query_y_relative)
-        # return support_x, support_y, query_x, query_y
+        # return support_x, torch.LongTensor(support_y), query_x, torch.LongTensor(query_y)
 
     def __len__(self):
         return self.batchsz

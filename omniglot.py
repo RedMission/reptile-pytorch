@@ -83,6 +83,8 @@ class AbstractMetaOmniglot(object):
         character_indices = np.random.choice(len(self), N, replace=False)
         for base_idx, idx in enumerate(character_indices):
             character, paths = self.characters_list[idx]
+            if not paths:
+                raise ValueError(character + " Paths array is empty")
             for i, path in enumerate(np.random.choice(paths, train_K + test_K, replace=False)):
                 new_path = {}
                 new_path.update(path)
@@ -116,7 +118,8 @@ class MetaOmniglotFolder(AbstractMetaOmniglot):
                 full_character = os.path.join(root, alphabet, character)
                 character_idx = len(self._characters)
                 self._characters[full_character] = []
-                for filename in list_files(full_character, '.png'):
+                # for filename in list_files(full_character, '.bmp'):
+                for filename in list_files(full_character,'png'):
                     self._characters[full_character].append({
                         'path': os.path.join(root, alphabet, character, filename),
                         'character_idx': character_idx

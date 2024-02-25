@@ -45,7 +45,7 @@ def Variable_(tensor, *args_, **kwargs):
 parser = argparse.ArgumentParser('Train reptile on PLAM')
 
 # Mode
-parser.add_argument('logdir', default="", help='Folder to store everything/load')
+parser.add_argument('--logdir', default="log/p4", help='Folder to store everything/load')
 
 # - Training params
 # parser.add_argument('--train_data', type=str, help='', default='../DAGAN/datasets/IITDdata_left_PSA2+DC+SC+W_6.npy')
@@ -53,12 +53,12 @@ parser.add_argument('logdir', default="", help='Folder to store everything/load'
 parser.add_argument('--train_data', type=str, help='', default='../DAGAN/datasets/Tongji_session2_PSA2+DC+SC+W_6.npy')
 parser.add_argument('--test_data', type=str, help='', default='../DAGAN/datasets/Tongji_session2.npy')
 parser.add_argument('--n_way', type=int, help='n way', default=5)
-parser.add_argument('--k_spt', type=int, help='k shot for support set', default=3)  # default=1
+parser.add_argument('--k_spt', type=int, help='k shot for support set', default=1)  # default=1
 parser.add_argument('--k_qry', type=int, help='k shot for query set', default=1)  # 原15
 parser.add_argument('--t_batchsz', type=int, help='train-batchsz', default=1000)
 parser.add_argument('--imgsz', type=int, help='imgsz', default=28)  # 调节的图像尺寸
 parser.add_argument('--imgc', type=int, help='imgc', default=1)
-parser.add_argument('--task_num', type=int, help='meta batch size, namely task num', default=10)
+parser.add_argument('--task_num', type=int, help='meta batch size, namely task num', default=6)
 parser.add_argument('--num_workers', type=int, help='数据加载子进程', default=0)
 
 parser.add_argument('--meta-iterations', default=5000, type=int, help='number of meta iterations')
@@ -113,18 +113,9 @@ else:
 logger = SummaryWriter(run_dir)
 
 # Load data
-# Resize is done by the MetaDataset because the result can be easily cached
-# omniglot = MetaOmniglotFolder(args.input, size=(28, 28), cache=ImageCache(),
-#                               transform_image=transform_image,
-#                               transform_label=transform_label)
-# meta_train, meta_test = split_omniglot(omniglot, args.validation)
 
-# print('Meta-Train characters', len(meta_train))
-# print('Meta-Test characters', len(meta_test))
-
-train_data = MamlDataset(root=args.train_data,
-                         mode='train', n_way=args.n_way,
-                         k_shot=args.k_spt,
+train_data = MamlDataset(root=args.train_data, mode='train',
+                         n_way=args.n_way, k_shot=args.k_spt,
                          k_query=args.k_qry,
                          batchsz=args.t_batchsz,  #
                          imgsz=args.imgsz,
@@ -287,12 +278,13 @@ for meta_iteration in tqdm.trange(args.start_meta_iteration, args.meta_iteration
         print('\n\nMeta-iteration', meta_iteration)
         print('(started at {})'.format(args.start_meta_iteration))
         print('Meta LR', meta_lr)
-
+        db = DataLoader(train_data, 50 , shuffle=True, num_workers=args.num_workers,
+                        pin_memory=True)  # 生成可以将所有任务跑一遍的迭代器
         (x_spt, y_spt, x_qry, y_qry) = next(iter(db))
         # Base-train
         net = meta_net.clone()
         optimizer = get_optimizer(net, state)  # do not save state of optimizer
-        loss = do_learning(net, optimizer, x_spt, y_spt, args.task_num)
+        loss = do_learning(net, optimizer, x_spt, y_spt, 50 )
 
         # Base-test: compute meta-loss, which is base-validation error
         meta_loss, meta_accuracy = do_evaluation(net, x_qry, y_qry, 1)  # only one iteration for eval

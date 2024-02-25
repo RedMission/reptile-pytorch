@@ -40,7 +40,7 @@ def Variable_(tensor, *args_, **kwargs):
 parser = argparse.ArgumentParser('Train reptile on omniglot')
 
 # Mode
-parser.add_argument('--logdir', default="log/o7",help='Folder to store everything/load')
+parser.add_argument('--logdir', default="log/o8",help='Folder to store everything/load')
 
 # - Training params
 parser.add_argument('--classes', default=5, type=int, help='classes in base-task (N-way)')
@@ -57,7 +57,7 @@ parser.add_argument('--lr', default=1e-3, type=float, help='base learning rate')
 # - General params
 parser.add_argument('--validation', default=0.1, type=float, help='Percentage of validation')
 parser.add_argument('--validate-every', default=100, type=int, help='Meta-evaluation every ... base-tasks')
-parser.add_argument('--input', default='omniglot', help='Path to omniglot dataset')
+parser.add_argument('--input', default='Tongji_ROI_nn', help='Path to omniglot dataset')
 parser.add_argument('--cuda', default=0, type=int, help='Use cuda')
 parser.add_argument('--check-every', default=10000, type=int, help='Checkpoint every')
 parser.add_argument('--checkpoint', default='', help='Path to checkpoint. This works only if starting fresh (i.e., no checkpoints in logdir)')
