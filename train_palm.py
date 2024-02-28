@@ -1,3 +1,7 @@
+'''
+
+数据格式有问题，网络无法训练
+'''
 import os
 import argparse
 import tqdm
@@ -45,7 +49,7 @@ def Variable_(tensor, *args_, **kwargs):
 parser = argparse.ArgumentParser('Train reptile on PLAM')
 
 # Mode
-parser.add_argument('--logdir', default="log/p4", help='Folder to store everything/load')
+parser.add_argument('--logdir', default="log/test", help='Folder to store everything/load')
 
 # - Training params
 # parser.add_argument('--train_data', type=str, help='', default='../DAGAN/datasets/IITDdata_left_PSA2+DC+SC+W_6.npy')
@@ -53,15 +57,15 @@ parser.add_argument('--logdir', default="log/p4", help='Folder to store everythi
 parser.add_argument('--train_data', type=str, help='', default='../DAGAN/datasets/Tongji_session2_PSA2+DC+SC+W_6.npy')
 parser.add_argument('--test_data', type=str, help='', default='../DAGAN/datasets/Tongji_session2.npy')
 parser.add_argument('--n_way', type=int, help='n way', default=5)
-parser.add_argument('--k_spt', type=int, help='k shot for support set', default=1)  # default=1
+parser.add_argument('--k_spt', type=int, help='k shot for support set', default=3)  # default=1
 parser.add_argument('--k_qry', type=int, help='k shot for query set', default=1)  # 原15
 parser.add_argument('--t_batchsz', type=int, help='train-batchsz', default=1000)
-parser.add_argument('--imgsz', type=int, help='imgsz', default=28)  # 调节的图像尺寸
-parser.add_argument('--imgc', type=int, help='imgc', default=1)
+parser.add_argument('--imgsz', type=int, help='imgsz', default=84)  # 调节的图像尺寸
+parser.add_argument('--imgc', type=int, help='imgc', default=3)
 parser.add_argument('--task_num', type=int, help='meta batch size, namely task num', default=6)
 parser.add_argument('--num_workers', type=int, help='数据加载子进程', default=0)
 
-parser.add_argument('--meta-iterations', default=5000, type=int, help='number of meta iterations')
+parser.add_argument('--meta-iterations', default=10000, type=int, help='number of meta iterations')
 parser.add_argument('--start-meta-iteration', default=0, type=int, help='start iteration')
 parser.add_argument('--iterations', default=5, type=int, help='number of base iterations')
 parser.add_argument('--test-iterations', default=50, type=int, help='number of base iterations')

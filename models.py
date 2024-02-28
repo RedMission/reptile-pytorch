@@ -62,8 +62,8 @@ class OmniglotModel(ReptileModel):
         )
 
         self.classifier = nn.Sequential(
-            # 2 x 2 x 64 = 256 2304
-            nn.Linear(256, num_classes),
+            # 2 x 2 x 64 = 256  掌纹：2304
+            nn.Linear(2304, num_classes),
             nn.LogSoftmax(1)
         )
 
@@ -71,6 +71,7 @@ class OmniglotModel(ReptileModel):
         out = x.view(-1, self.imgc, self.imgsz, self.imgsz)
         out = self.conv(out)
         out = out.view(len(out), -1)
+
         out = self.classifier(out)
         return out
 

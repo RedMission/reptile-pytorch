@@ -37,14 +37,14 @@ def Variable_(tensor, *args_, **kwargs):
     return variable
 
 # Parsing
-parser = argparse.ArgumentParser('Train reptile on omniglot')
+parser = argparse.ArgumentParser('Train reptile on ')
 
 # Mode
-parser.add_argument('--logdir', default="log/o8",help='Folder to store everything/load')
+parser.add_argument('logdir', default="log/TJ/5-3",help='Folder to store everything/load')
 
 # - Training params
-parser.add_argument('--classes', default=5, type=int, help='classes in base-task (N-way)')
-parser.add_argument('--shots', default=1, type=int, help='shots per class (K-shot)')
+parser.add_argument('--classes', default=10, type=int, help='classes in base-task (N-way)')
+parser.add_argument('--shots', default=3, type=int, help='shots per class (K-shot)')
 parser.add_argument('--train-shots', default=3, type=int, help='train shots')
 parser.add_argument('--meta-iterations', default=100000, type=int, help='number of meta iterations')
 parser.add_argument('--start-meta-iteration', default=0, type=int, help='start iteration')
@@ -52,11 +52,11 @@ parser.add_argument('--iterations', default=5, type=int, help='number of base it
 parser.add_argument('--test-iterations', default=50, type=int, help='number of base iterations')
 parser.add_argument('--batch', default=10, type=int, help='minibatch size in base task')
 parser.add_argument('--meta-lr', default=1., type=float, help='meta learning rate')
-parser.add_argument('--lr', default=1e-3, type=float, help='base learning rate')
+parser.add_argument('--lr', default=1e-4, type=float, help='base learning rate')
 
 # - General params
 parser.add_argument('--validation', default=0.1, type=float, help='Percentage of validation')
-parser.add_argument('--validate-every', default=100, type=int, help='Meta-evaluation every ... base-tasks')
+parser.add_argument('--validate-every', default=500, type=int, help='Meta-evaluation every ... base-tasks')
 parser.add_argument('--input', default='Tongji_ROI_nn', help='Path to omniglot dataset')
 parser.add_argument('--cuda', default=0, type=int, help='Use cuda')
 parser.add_argument('--check-every', default=10000, type=int, help='Checkpoint every')
@@ -276,7 +276,7 @@ for meta_iteration in tqdm.trange(args.start_meta_iteration, args.meta_iteration
     if meta_iteration % args.check_every == 0 and not (args.checkpoint and meta_iteration == args.start_meta_iteration):
         # Make a checkpoint
         checkpoint = {
-            'meta_net': meta_net.state_dict(),
+            'meta_net': meta_net.state_dict(), # 存了网络参数
             'meta_optimizer': meta_optimizer.state_dict(),
             'optimizer': state,
             'meta_iteration': meta_iteration,

@@ -118,8 +118,8 @@ class MetaOmniglotFolder(AbstractMetaOmniglot):
                 full_character = os.path.join(root, alphabet, character)
                 character_idx = len(self._characters)
                 self._characters[full_character] = []
-                # for filename in list_files(full_character, '.bmp'):
-                for filename in list_files(full_character,'png'):
+                for filename in list_files(full_character, '.bmp'):
+                # for filename in list_files(full_character,'png'):
                     self._characters[full_character].append({
                         'path': os.path.join(root, alphabet, character, filename),
                         'character_idx': character_idx
