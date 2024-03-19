@@ -146,6 +146,66 @@ class OmniglotModel_old(ReptileModel):
         return clone
 
 
+class TmpModel(ReptileModel):
+    """
+    A model for Omniglot classification.
+    """
+    def __init__(self, imgc,imgsz):
+        ReptileModel.__init__(self)
+
+        self.imgc = imgc
+        self.imgsz = imgsz
+
+        self.conv = nn.Sequential(
+            # 28 x 28 - 1
+            nn.Conv2d(self.imgc, 64, 3, 2, 1),
+            nn.BatchNorm2d(64),
+            nn.ReLU(True),
+
+            # 14 x 14 - 64
+            nn.Conv2d(64, 64, 3, 2, 1),
+            nn.BatchNorm2d(64),
+            nn.ReLU(True),
+
+            # 7 x 7 - 64
+            nn.Conv2d(64, 64, 3, 2, 1),
+            nn.BatchNorm2d(64),
+            nn.ReLU(True),
+
+            # 4 x 4 - 64
+            nn.Conv2d(64, 64, 3, 2, 1),
+            nn.BatchNorm2d(64),
+            nn.ReLU(True),
+
+            # 2 x 2 - 64
+        )
+
+        # self.classifier = nn.Sequential(
+        #     # 2 x 2 x 64 = 256  掌纹：2304
+        #     nn.Linear(2304, num_classes),
+        #     nn.LogSoftmax(1)
+        # )
+
+    def forward(self, x):
+        out = x.view(-1, self.imgc, self.imgsz, self.imgsz)
+        out = self.conv(out)
+        out = out.view(len(out), -1)
+
+        # out = self.classifier(out)
+        return out
+
+    def predict(self, prob):
+        __, argmax = prob.max(1)
+        return argmax
+
+    def clone(self):
+        clone = OmniglotModel(self.num_classes,self.imgc,self.imgsz)
+        clone.load_state_dict(self.state_dict())
+        if self.is_cuda():
+            clone.cuda()
+        return clone
+
+
 if __name__ == '__main__':
     model = OmniglotModel(20,1)
     x = Variable(torch.zeros(5, 28*28))

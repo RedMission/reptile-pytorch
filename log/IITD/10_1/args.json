@@ -1,0 +1,19 @@
+{
+    "logdir": "log/IITD/10_1",
+    "classes": 10,
+    "shots": 1,
+    "train_shots": 1,
+    "meta_iterations": 100000,
+    "start_meta_iteration": 0,
+    "iterations": 5,
+    "test_iterations": 50,
+    "batch": 10,
+    "meta_lr": 1.0,
+    "lr": 0.0001,
+    "validation": 0.1,
+    "validate_every": 500,
+    "input": "E:\\Documents\\Matlab_work\\DataBase\\IITD_Palmprint_V1_nn",
+    "cuda": 0,
+    "check_every": 10000,
+    "checkpoint": ""
+}

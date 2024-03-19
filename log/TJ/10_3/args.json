@@ -1,0 +1,19 @@
+{
+    "logdir": "log/TJ/10_3",
+    "classes": 10,
+    "shots": 3,
+    "train_shots": 3,
+    "meta_iterations": 100000,
+    "start_meta_iteration": 0,
+    "iterations": 5,
+    "test_iterations": 50,
+    "batch": 10,
+    "meta_lr": 1.0,
+    "lr": 0.0001,
+    "validation": 0.1,
+    "validate_every": 500,
+    "input": "E:\\Documents\\Matlab_work\\DataBase\\Tongji_ROI_nn",
+    "cuda": 0,
+    "check_every": 10000,
+    "checkpoint": ""
+}
